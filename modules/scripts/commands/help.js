@@ -17,21 +17,19 @@ module.exports.run = function ({ event, args }) {
     const commandsPath = path.join(__dirname, "../commands");
     const eventsPath = path.join(__dirname, "../events");
 
-    let message = "Here are the available commands and events:\n\n";
+    let message = `✨ *Welcome to the Help Menu!* ✨\n\n`;
+    message += `📜 Below is a list of all available commands and events:\n\n`;
 
     // Load and log command details
     const commandFiles = fs
       .readdirSync(commandsPath)
       .filter((file) => file.endsWith(".js"));
-    message += "Commands:\n";
+    message += `📋 *Commands:*\n`;
     commandFiles.forEach((file) => {
       const command = require(path.join(commandsPath, file));
       if (command.config) {
-        message += `${command.config.usePrefix ? PREFIX : ""}${command.config.name}\n`;
-        message += `Author: ${command.config.author}\n`;
-        message += `Description: ${command.config.description}\n\n`;
-        // message += `Admin Only: ${command.config.adminOnly ? "Yes" : "No"}\n`;
-        // message += `Prefix Required: ${command.config.usePrefix ? "Yes" : "No"}\n\n`;
+        message += `🔹 *${command.config.usePrefix ? PREFIX : ""}${command.config.name.toUpperCase()}*\n`;
+        message += `   📖 ${command.config.description}\n\n`;
       }
     });
 
@@ -39,19 +37,21 @@ module.exports.run = function ({ event, args }) {
     const eventFiles = fs
       .readdirSync(eventsPath)
       .filter((file) => file.endsWith(".js"));
-    message += "Events:\n";
+    message += `✨ *Events:*\n`;
     eventFiles.forEach((file) => {
       const event = require(path.join(eventsPath, file));
       if (event.config) {
-        message += `- ${event.config.name}\n`;
-        message += `Author: ${event.config.author}\n`;
-        message += `Description: ${event.config.description}\n\n`;
-        // message += `Admin Only: ${event.config.adminOnly ? "Yes" : "No"}\n\n`;
+        message += `🔸 *${event.config.name.toUpperCase()}*\n`;
+        message += `   📖 ${event.config.description}\n\n`;
       }
     });
 
-    message += "Feel free to use these commands and events as you wish.";
+    message += `💡 *Tip: Use these commands and events to maximize your experience!*\n`;
+    message += `💬 *Need more help? Contact an admin or refer to the documentation.*\n`;
+    message += `🎉 *Enjoy using the bot!* 🎉`;
+
     // Send the message to the user
     api.sendMessage(message, event.sender.id);
   }
 };
+    
