@@ -1,41 +1,47 @@
 module.exports.config = {
   name: "confess", // Command Name (IMPORTANT)
   author: "Jmlabaco", // Your name as the author
-  version: "1.2", // Increment version for updates
+  version: "1.0.1", // Increment version for updates
   category: "Messaging", // The category of the command
-  description: "Send an anonymous message to a specific user using their UID.", // Description of the command
+  description: "Confess to someone anonymously using their Facebook link.", // Description of the command
   adminOnly: false, // Whether only admins can use this command
   usePrefix: true, // Requires prefix to activate the command
   cooldown: 5, // Cooldown time in seconds
 };
 
 // The code script runs here
-// event, args, and api are parameters provided by the command handler
-module.exports.run = function ({ event, args, api }) {
-  // Check if arguments are valid
-  if (args.length < 2) {
-    return api.sendMessage(
-      "Usage: /confess <UID> <message>\nExample: /confess 61550941044179 Hello!",
-      event.senderID
+module.exports.run = async function ({ api, event, args }) {
+  // Helper function to send replies
+  function reply(message) {
+    api.sendMessage(message, event.threadID, event.messageID);
+  }
+
+  // Parse input
+  const content = args.join(" ").split("|").map((item) => item.trim());
+  const messageText = content[0];
+  const facebookLink = content[1];
+
+  // Validate input
+  if (!args[0] || !messageText || !facebookLink) {
+    return reply(
+      `Wrong format.\nUsage: /${this.config.name} <your message> | <facebook link>\nExample: /${this.config.name} I like you! | https://facebook.com/profile`
     );
   }
 
-  const uid = args[0]; // Extract the UID of the recipient
-  const message = args.slice(1).join(" "); // Combine the remaining arguments into the message
+  try {
+    // Get UID from the Facebook link
+    const recipientUID = await api.getUID(facebookLink);
 
-  // Attempt to send the confession
-  api.sendMessage(
-    `You have received an anonymous confession: "${message}"`,
-    uid,
-    (err) => {
-      if (err) {
-        console.error("Error sending message:", err); // Log the error for debugging
-        return api.sendMessage(
-          "Failed to send your confession. Please ensure the UID is valid and try again.",
-          event.senderID
-        );
-      }
-      api.sendMessage("Your confession has been sent successfully!", event.senderID);
-    }
-  );
+    // Send the confession to the recipient
+    api.sendMessage(
+      `Someone anonymously confessed to you:\n\nMessage: "${messageText}"`,
+      recipientUID,
+      () => reply("Confession has been sent successfully!")
+    );
+  } catch (err) {
+    console.error(err);
+    reply(
+      "Failed to send your confession. It might be an invalid Facebook link, or the user could not be found."
+    );
+  }
 };
