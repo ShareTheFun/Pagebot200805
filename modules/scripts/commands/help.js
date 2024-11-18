@@ -37,7 +37,13 @@ module.exports.run = function ({ event, args }) {
         message += `✍️ Author: ${command.config.author || "Unknown"}\n`;
         message += `⚡ Use Prefix: ${command.config.usePrefix ? "Yes" : "No"}\n`;
 
-        return api.sendMessage(message, event.sender.id);
+        // Send command details
+        api.sendMessage(message, event.sender.id, () => {
+          // Send the GIF after sending the command details
+          api.sendAttachment("https://i.gifer.com/KNiu.gif", event.sender.id);
+        });
+
+        return;
       }
     } catch (error) {
       return api.sendMessage(
@@ -85,5 +91,8 @@ module.exports.run = function ({ event, args }) {
   message += `🎉 Enjoy using the bot! 🎉`;
 
   // Send the general help message
-  api.sendMessage(message, event.sender.id);
+  api.sendMessage(message, event.sender.id, () => {
+    // Send the GIF after sending the help message
+    api.sendAttachment("https://i.gifer.com/KNiu.gif", event.sender.id);
+  });
 };
