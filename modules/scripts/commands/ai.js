@@ -1,11 +1,11 @@
 module.exports.config = {
-  name: "ai", // Command Name (IMPORTANT)
+  name: "shoti", // Command Name (IMPORTANT)
   author: "Jmlabaco", // Your name as the author
   version: "1.0", // Increment version if you update the command
-  category: "API Interaction", // The category of the command
+  category: "ai", // The category of the command
   description: "Sends a query to the AI API and returns the response.", // Description of the command
   adminOnly: false, // Whether only admins can use this command
-  usePrefix: true, // Requires prefix to activate the command
+  usePrefix: false, // Requires prefix to activate the command
   cooldown: 10, // Cooldown time in seconds
 };
 
