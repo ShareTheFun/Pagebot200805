@@ -1,7 +1,7 @@
 module.exports.config = {
   name: "confess", // Command Name (IMPORTANT)
   author: "Jmlabaco", // Your name as the author
-  version: "1.0", // Increment version if you update the command
+  version: "1.1", // Increment version for updates
   category: "Messaging", // The category of the command
   description: "Send an anonymous message to a specific user using their UID.", // Description of the command
   adminOnly: false, // Whether only admins can use this command
@@ -11,30 +11,31 @@ module.exports.config = {
 
 // The code scripts runs here
 // event and args are the parameters you get from the command handler
-module.exports.run = function ({ event, args }) {
+module.exports.run = function ({ event, args, api }) {
+  // Validate input
   if (args.length < 2) {
     return api.sendMessage(
-      "Usage: /confess <UID> <message>\nExample: /confess 123456 Hello!",
-      event.sender.id
+      "Usage: /confess <UID> <message>\nExample: /confess 61550941044179 Hello!",
+      event.senderID
     );
   }
 
   const uid = args[0]; // The UID of the recipient
-  const message = args.slice(1).join(" "); // The message to send
+  const message = args.slice(1).join(" "); // Combine the rest of the arguments into the message
 
-  // Send the message to the specified UID
+  // Send the message to the recipient UID
   api.sendMessage(
     `You have received an anonymous confession: "${message}"`,
     uid,
     (err) => {
       if (err) {
+        console.error(err); // Log the error for debugging
         return api.sendMessage(
           "Failed to send your confession. Please check the UID and try again.",
-          event.sender.id
+          event.senderID
         );
       }
-      api.sendMessage("Your confession has been sent successfully!", event.sender.id);
+      api.sendMessage("Your confession has been sent successfully!", event.senderID);
     }
   );
 };
-    
