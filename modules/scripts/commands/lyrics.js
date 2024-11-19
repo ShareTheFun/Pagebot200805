@@ -36,15 +36,14 @@ module.exports.run = async function ({ event, args }) {
 
     const { title, artist, lyrics } = result;
 
-    // Format and send the lyrics
-    let message = `🎵 Lyrics Found! 🎵\n\n`;
-    message += `🎶 Title: ${title || "Unknown"}\n`;
-    message += `🎤 Artist: ${artist || "Unknown"}\n\n`;
-    message += `📜 Lyrics:\n${lyrics.slice(0, 2000)}...\n\n`; // Limit lyrics length to prevent overflow
-
-    api.sendMessage(message, event.sender.id, () => {
-      // Optional: Send a GIF attachment
-      api.sendAttachment("https://i.gifer.com/KNiu.gif", event.sender.id);
+    // Send title and artist first
+    const infoMessage = `🎵 Lyrics Found! 🎵\n\n🎶 Title: ${title || "Unknown"}\n🎤 Artist: ${artist || "Unknown"}`;
+    api.sendMessage(infoMessage, event.sender.id, () => {
+      // Send the full lyrics without truncation
+      api.sendMessage(`📜 Lyrics:\n\n${lyrics}`, event.sender.id, () => {
+        // Optional: Send a GIF attachment after lyrics
+        api.sendAttachment("https://i.gifer.com/KNiu.gif", event.sender.id);
+      });
     });
   } catch (error) {
     console.error(error);
@@ -54,4 +53,3 @@ module.exports.run = async function ({ event, args }) {
     );
   }
 };
-  
