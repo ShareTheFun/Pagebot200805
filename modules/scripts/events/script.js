@@ -21,13 +21,13 @@ module.exports.run = async function({ event, args }) {
             elements: [
               {
                 title: 'Hey there newbie!', // The title of the generic message
-                subtitle: 'Thank you for using Pagebot. Leave a like on my repository and support my work.', // The subtitle of the message
-                image_url: 'https://i.ibb.co/dJzSv5Q/pagebot.jpg', // The image URL
+                subtitle: 'SHOTI BOT: EDUCATIONAL PURPOSES ONLY', // The subtitle of the message
+                image_url: 'https://i.gifer.com/GmUB.gif', // The image URL
                 buttons: [
                   {
                     type: 'web_url',
-                    url: 'https://www.facebook.com/yandeva.me',
-                    title: 'Check my Profile'
+                    url: 'https://www.facebook.com/profile.php?id=61550941044179',
+                    title: 'Contact Admin'
                   },
                   {
                     type: 'postback',
