@@ -3,7 +3,7 @@ const axios = require("axios");
 module.exports.config = {
   name: "lyrics",
   author: "Jmlabaco",
-  version: "1.0.5",
+  version: "1.0.6",
   category: "Utility",
   description: "Fetch song lyrics by searching for the song title or artist.",
   adminOnly: false,
@@ -36,25 +36,16 @@ module.exports.run = async function ({ event, args }) {
 
     const { title, artist, lyrics } = result;
 
-    // Format the intro message
-    let introMessage = `🎵 Lyrics Found! 🎵\n\n`;
-    introMessage += `🎶 Title: ${title || "Unknown"}\n`;
-    introMessage += `🎤 Artist: ${artist || "Unknown"}\n\n`;
-    api.sendMessage(introMessage, event.sender.id);
+    // Format and send the lyrics
+    let message = `🎵 Lyrics Found! 🎵\n\n`;
+    message += `🎶 Title: ${title || "Unknown"}\n`;
+    message += `🎤 Artist: ${artist || "Unknown"}\n\n`;
+    message += `📜 Lyrics:\n${lyrics.slice(0, 2000)}...\n\n`; // Limit lyrics length to prevent overflow
 
-    // Break lyrics into chunks of 5000 characters
-    const maxChunkSize = 5000;
-    const chunks = lyrics.match(new RegExp(`.{1,${maxChunkSize}}`, "g"));
-
-    // Send each chunk sequentially
-    for (const chunk of chunks) {
-      await new Promise((resolve) =>
-        api.sendMessage(chunk, event.sender.id, resolve)
-      );
-    }
-
-    // Optional: Send a GIF attachment
-    api.sendAttachment("https://i.gifer.com/KNiu.gif", event.sender.id);
+    api.sendMessage(message, event.sender.id, () => {
+      // Optional: Send a GIF attachment
+      api.sendAttachment("https://i.gifer.com/KNiu.gif", event.sender.id);
+    });
   } catch (error) {
     console.error(error);
     api.sendMessage(
